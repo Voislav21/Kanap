@@ -27,8 +27,8 @@ const getArticles = () => {
     })
     .then(items => {
         console.log(items)
+        const cards = document.querySelector("#items");
         for(items of items) {
-            const cards = document.querySelector("#items");
             cards.innerHTML += `<a href="./product.html?id=${items._id}">
             <article>
               <img src="${items.imageUrl}" alt="${items.altTxt}">
@@ -37,6 +37,7 @@ const getArticles = () => {
             </article>
             </a>`
         }
+        console.log(cards)
     })
 }
 getArticles();
