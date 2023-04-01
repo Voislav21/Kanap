@@ -26,5 +26,18 @@ const getArticle  = () => {
         console.log(colorOption)
     })
 }
+
+
+const addToCart = document.querySelector("#addToCart");
+addToCart.addEventListener('click', () => {
+    const addProduct = {
+        id: id,
+        color: document.querySelector("#colors").value,
+        quantity: document.querySelector("#quantity").value
+    }
+    console.log(addProduct);
+});
+
+
 //Call the function//
 getArticle();
