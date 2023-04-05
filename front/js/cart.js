@@ -1,11 +1,15 @@
 // Create function that will access all the data needed to populate the page //
 const displayItems = async () => {
     
-    // Get the cart items from local storage
+    // Get the cart items from local storage //
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     // Accessing the section of the HTML we want to populate //
     const cartItems = document.querySelector("#cart__items");
+
+    // Initialize totalPrice and totalQuantity to 0 //
+    let totalPrice = 0;
+    let totalQuantity = 0;
 
     // Iriterate through each item and storing its information into new varibles //
     for (let i = 0; i < cart.length; i++) {
@@ -16,11 +20,14 @@ const displayItems = async () => {
       // Fetch the product details from the API based on product ID //
       const response = await fetch(`http://localhost:3000/api/products/${productID}`);
       const product = await response.json();
+
+      totalPrice += product.price * productQuantity;
+      totalQuantity += parseInt(productQuantity);
         
-      //Imbedding all content into the cart page //
+      // Imbedding all content into the cart page //
       cartItems.innerHTML += `<article class="cart__item" data-id="${productID}" data-color="${productColor}">
         <div class="cart__item__img">
-          <img src="${product.imageUrl}" alt="${product.name}">
+          <img src="${product.imageUrl}" alt="${product.altTxt}">
         </div>
         <div class="cart__item__content">
           <div class="cart__item__content__description">
@@ -41,7 +48,13 @@ const displayItems = async () => {
         </div>
       </article>`;
   }
-}
+
+  // Imbedding totalPrice and totalQuantity //
+  const totalQuantityElement = document.querySelector("#totalQuantity");
+  totalQuantityElement.textContent = totalQuantity;
+  const totalPriceElement = document.querySelector("#totalPrice");
+  totalPriceElement.textContent = totalPrice;
+};
 
 //Calling the function //
 displayItems();
