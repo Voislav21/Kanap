@@ -1,3 +1,35 @@
+// An updateTotals function for when the user changes the quantity of a product //
+const updateTotals = async () => {
+
+  // Get cart items from local storage //
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  // Initialize totalPrice and totalQuantity to 0 //
+  let totalPrice = 0;
+  let totalQuantity = 0;
+
+  // Loop through items and store values in new variables //
+  for (let i = 0; i < cart.length; i++) {
+    const productId = cart[i].id;
+    const productQuantity = cart[i].quantity;
+
+    // Fetch product details from API based on unique product ID //
+    const response = await fetch(`http://localhost:3000/api/products/${productId}`);
+    const product = await response.json();
+
+    // Math to calculate totalPrice and totalQuantity //
+    totalPrice += product.price * productQuantity;
+    totalQuantity += parseInt(productQuantity);
+
+    // Display totalPrice and totalQuantity to the DOM //
+    const totalPriceElement = document.querySelector("#totalPrice");
+    totalPriceElement.textContent = totalPrice;
+    const totalQuantityElement = document.querySelector("#totalQuantity");
+    totalQuantityElement.textContent = totalQuantity;
+
+  }
+};
+
 // Create function that will access all the data needed to populate the page //
 const displayItems = async () => {
     
@@ -17,7 +49,7 @@ const displayItems = async () => {
       const productColor = cart[i].color;
       const productQuantity = cart[i].quantity;
     
-      // Fetch the product details from the API based on product ID //
+      // Fetch the product details from the API based on unique product ID //
       const response = await fetch(`http://localhost:3000/api/products/${productID}`);
       const product = await response.json();
 
@@ -48,9 +80,10 @@ const displayItems = async () => {
         </div>
       </article>`;
 
+      // Add event listener for each products itemQuantity to be modified //
       const itemQuantity = document.querySelectorAll(".itemQuantity");
       itemQuantity.forEach((item) => {
-        item.addEventListener("change", (event) => {
+        item.addEventListener("change", async (event) => {
           const updateQuantity = event.target.value;
           const cartItems = JSON.parse(localStorage.getItem("cart")) || []
 
@@ -73,6 +106,9 @@ const displayItems = async () => {
         
           // Save updated cart to local storage //
           localStorage.setItem("cart", JSON.stringify(cartItems));
+
+          // Call our function to display new updated totals to the DOM //
+          updateTotals();
         });
       });
   }
@@ -84,5 +120,5 @@ const displayItems = async () => {
   totalPriceElement.textContent = totalPrice;
 };
 
-//Calling the function //
+// Calling the function //
 displayItems();
