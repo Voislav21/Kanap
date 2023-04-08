@@ -59,10 +59,17 @@ const displayItems = async () => {
             const cartItem = cartItems[i];
             if (cartItem.id === event.target.closest(".cart__item").dataset.id && 
                 cartItem.color === event.target.closest(".cart__item").dataset.color) {
-                  cartItem.quantity = updateQuantity;
-                  break;
+                
+                // Checking if the user puts a correct value, if not an alert message and the original value is displayed again //
+                if (updateQuantity > 100 || updateQuantity <= 0) {
+                  alert("No way josé");
+                  event.target.value = cartItem.quantity;
+                  return;
                 }
+                cartItem.quantity = updateQuantity;
+                break;
               }
+            }
         
           // Save updated cart to local storage //
           localStorage.setItem("cart", JSON.stringify(cartItems));
