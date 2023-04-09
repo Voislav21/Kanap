@@ -4,6 +4,16 @@ const updateTotals = async () => {
   // Get cart items from local storage //
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+  // Accessing totalPrice and totalQuantity //
+  const totalPriceElement = document.querySelector("#totalPrice");
+  const totalQuantityElement = document.querySelector("#totalQuantity");
+
+  // Checking if the cart array is empty //
+  if (cart.length === 0){
+    totalQuantityElement.textContent = "0";
+    totalPriceElement.textContent = "0";
+  }
+
   // Initialize totalPrice and totalQuantity to 0 //
   let totalPrice = 0;
   let totalQuantity = 0;
@@ -22,11 +32,8 @@ const updateTotals = async () => {
     totalQuantity += parseInt(productQuantity);
 
     // Display totalPrice and totalQuantity to the DOM //
-    const totalPriceElement = document.querySelector("#totalPrice");
     totalPriceElement.textContent = totalPrice;
-    const totalQuantityElement = document.querySelector("#totalQuantity");
     totalQuantityElement.textContent = totalQuantity;
-
   }
 };
 
@@ -85,7 +92,7 @@ const displayItems = async () => {
       itemQuantity.forEach((item) => {
         item.addEventListener("change", async (event) => {
           const updateQuantity = event.target.value;
-          const cartItems = JSON.parse(localStorage.getItem("cart")) || []
+          const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 
           // Loop through cart items and update quantity of matching item //
           for (let i=0; i<cart.length;i++) {
@@ -111,7 +118,33 @@ const displayItems = async () => {
           updateTotals();
         });
       });
-  }
+
+      // Add an event listener to each products delete button //
+      const deleteBtn = document.querySelectorAll(".cart__item__content__settings__delete");
+      deleteBtn.forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+          const cartItem = event.target.closest(".cart__item");
+          const itemId = cartItem.dataset.id;
+          const itemColor = cartItem.dataset.color
+
+          // Access the cart from local Storage //
+          const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+          // Filter through the cart to target and only keep stored what doesnt match with our click //
+          const UpdatedCart = cart.filter(item => !(item.id === itemId && item.color === itemColor));
+
+          // Update the cart on local storage //
+          localStorage.setItem("cart", JSON.stringify(UpdatedCart));
+
+          // Remove the product from the DOM //
+          cartItem.remove();
+          alert(`You have removed ${product.name} from your cart!`);
+
+          // Call our updateTotals function //
+          updateTotals();
+        });
+      });
+    }
 
   // Imbedding totalPrice and totalQuantity //
   const totalQuantityElement = document.querySelector("#totalQuantity");
