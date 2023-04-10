@@ -146,11 +146,8 @@ const displayItems = async () => {
       });
     }
 
-  // Imbedding totalPrice and totalQuantity //
-  const totalQuantityElement = document.querySelector("#totalQuantity");
-  totalQuantityElement.textContent = totalQuantity;
-  const totalPriceElement = document.querySelector("#totalPrice");
-  totalPriceElement.textContent = totalPrice;
+    // Call our updateTotals function //
+    updateTotals();
 };
 
 // Calling the function //
