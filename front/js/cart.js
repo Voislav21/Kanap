@@ -52,19 +52,19 @@ const displayItems = async () => {
 
     // Iriterate through each item and storing its information into new varibles //
     for (let i = 0; i < cart.length; i++) {
-      const productID = cart[i].id;
+      const productId = cart[i].id;
       const productColor = cart[i].color;
       const productQuantity = cart[i].quantity;
     
       // Fetch the product details from the API based on unique product ID //
-      const response = await fetch(`http://localhost:3000/api/products/${productID}`);
+      const response = await fetch(`http://localhost:3000/api/products/${productId}`);
       const product = await response.json();
 
       totalPrice += product.price * productQuantity;
       totalQuantity += parseInt(productQuantity);
         
       // Imbedding all content into the cart page //
-      cartItems.innerHTML += `<article class="cart__item" data-id="${productID}" data-color="${productColor}">
+      cartItems.innerHTML += `<article class="cart__item" data-id="${productId}" data-color="${productColor}">
         <div class="cart__item__img">
           <img src="${product.imageUrl}" alt="${product.altTxt}">
         </div>
@@ -150,5 +150,110 @@ const displayItems = async () => {
     updateTotals();
 };
 
+
+// Access the form and add an event listener to each of the input fields using switch case //
+const submitFrom = document.querySelector(".cart__order__form");
+submitFrom.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const inputElements = document.querySelectorAll(".cart__order__form__question input");
+  let isValid = true;
+  inputElements.forEach((input) => {
+      const inputValue = input.value;
+      const inputName = input.name;
+      const inputError = document.getElementById(`${inputName}ErrorMsg`);
+      const invalid = () => {
+        input.style.border = "solid red 2px";
+      } 
+      
+
+      // Validation logic here
+      switch (inputName) {
+        case "firstName":
+          const nameRegex = /^[A-Za-z]+$/;
+          if (!nameRegex.test(inputValue)) {
+            invalid();
+            inputError.textContent = "Please enter a valid first name";
+            isValid = false;
+          }
+          break;
+
+        // Validation for last name
+        case "lastName":
+          const lastNameRegex = /^[A-Za-z]+$/;
+          if (!lastNameRegex.test(inputValue)) {
+            invalid();
+            inputError.textContent = "Please enter a valid last name";
+            isValid = false;
+          }
+          break;
+
+        // Validation for address
+        case "address":
+          const addressRegex = /^[#.0-9a-zA-Z\s,-]+$/;
+          if(!addressRegex.test(inputValue)){
+            invalid();
+            inputError.textContent = "Please enter a valid address";
+            isValid = false;
+          }
+          break;
+
+        // Validation for city
+        case "city":
+          const cityRegex = /^[a-zA-Z\s]+$/;
+          if(!cityRegex.test(inputValue)){
+            invalid();
+            inputError.textContent = "Please enter a valid address";
+            isValid = false;
+          }
+          break;
+
+        // Validation for email
+        case "email":
+          const emailRegex = /^\S+@\S+\.\S+$/;
+          if(!emailRegex.test(inputValue)){
+            invalid();
+            inputError.textContent = "Please enter a valid address";
+            isValid = false;
+          }
+          break;
+      }
+    });
+
+  if(isValid){
+    const form = document.querySelector(".cart__order__form");
+    const formData = new FormData(form);
+    const contact = Object.fromEntries(formData);
+
+    const contactString = JSON.stringify(contact);
+    
+    console.log(contact);
+    console.log(contactString);
+
+    // Make a POST request
+    fetch('http://localhost:3000/api/products/order', {
+      method: 'POST',
+      body: contactString,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res =>{
+      console.log(res.status);
+      return res.json();
+    })
+    .then(data =>{
+      const orderId = data.orderId;
+      console.log(data)
+      //window.location.href = `confirmation.html?id=${orderId}`;
+    })
+  }
+  
+});
+
+
+
 // Calling the function //
 displayItems();
+
+
