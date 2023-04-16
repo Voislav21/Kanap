@@ -151,11 +151,12 @@ const displayItems = async () => {
 };
 
 
-// Access the form and add an event listener to each of the input fields using switch case //
+// Access the form and add an event listener tp the orderBtn //
 const submitFrom = document.querySelector(".cart__order__form");
 submitFrom.addEventListener("submit", (event) => {
   event.preventDefault();
 
+  // Access the form questions and check if the values entered are valid for each field //
   const inputElements = document.querySelectorAll(".cart__order__form__question input");
   let isValid = true;
   inputElements.forEach((input) => {
@@ -167,7 +168,7 @@ submitFrom.addEventListener("submit", (event) => {
       } 
       
 
-      // Validation logic here
+      // Validation logic here //
       switch (inputName) {
         case "firstName":
           const nameRegex = /^[A-Za-z]+$/;
@@ -178,7 +179,7 @@ submitFrom.addEventListener("submit", (event) => {
           }
           break;
 
-        // Validation for last name
+        // Validation for last name //
         case "lastName":
           const lastNameRegex = /^[A-Za-z]+$/;
           if (!lastNameRegex.test(inputValue)) {
@@ -188,7 +189,7 @@ submitFrom.addEventListener("submit", (event) => {
           }
           break;
 
-        // Validation for address
+        // Validation for address //
         case "address":
           const addressRegex = /^[#.0-9a-zA-Z\s,-]+$/;
           if(!addressRegex.test(inputValue)){
@@ -198,7 +199,7 @@ submitFrom.addEventListener("submit", (event) => {
           }
           break;
 
-        // Validation for city
+        // Validation for city //
         case "city":
           const cityRegex = /^[a-zA-Z\s]+$/;
           if(!cityRegex.test(inputValue)){
@@ -208,7 +209,7 @@ submitFrom.addEventListener("submit", (event) => {
           }
           break;
 
-        // Validation for email
+        // Validation for email //
         case "email":
           const emailRegex = /^\S+@\S+\.\S+$/;
           if(!emailRegex.test(inputValue)){
@@ -220,32 +221,40 @@ submitFrom.addEventListener("submit", (event) => {
       }
     });
 
+    // if all values enetered return true //
   if(isValid){
     const form = document.querySelector(".cart__order__form");
+    // Create a formData //
     const formData = new FormData(form);
+    // Extract the values //
     const contact = Object.fromEntries(formData);
 
-    const contactString = JSON.stringify(contact);
-    
-    console.log(contact);
-    console.log(contactString);
+    // Get cart items from local storage //
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    // Get only the id's //
+    let products = cart.map(product => product.id)
+
+    // Store all data in new varible //
+    const sendFormData = {
+      contact,
+      products,
+    }
 
     // Make a POST request
     fetch('http://localhost:3000/api/products/order', {
       method: 'POST',
-      body: contactString,
-      headers: {
+      body: JSON.stringify(sendFormData),
+      headers: { 
         'Content-Type': 'application/json'
       }
     })
     .then(res =>{
-      console.log(res.status);
       return res.json();
     })
     .then(data =>{
+      // Store the response in a new varible to be sent to a unique confirmation page //
       const orderId = data.orderId;
-      console.log(data)
-      //window.location.href = `confirmation.html?id=${orderId}`;
+      window.location.href = `confirmation.html?id=${orderId}`;
     })
   }
   
