@@ -45,11 +45,7 @@ const displayItems = async () => {
 
     // Accessing the section of the HTML we want to populate //
     const cartItems = document.querySelector("#cart__items");
-
-    // Initialize totalPrice and totalQuantity to 0 //
-    let totalPrice = 0;
-    let totalQuantity = 0;
-
+    
     // Iriterate through each item and storing its information into new varibles //
     for (let i = 0; i < cart.length; i++) {
       const productId = cart[i].id;
@@ -59,9 +55,6 @@ const displayItems = async () => {
       // Fetch the product details from the API based on unique product ID //
       const response = await fetch(`http://localhost:3000/api/products/${productId}`);
       const product = await response.json();
-
-      totalPrice += product.price * productQuantity;
-      totalQuantity += parseInt(productQuantity);
         
       // Imbedding all content into the cart page //
       cartItems.innerHTML += `<article class="cart__item" data-id="${productId}" data-color="${productColor}">
@@ -90,7 +83,7 @@ const displayItems = async () => {
       // Add event listener for each products itemQuantity to be modified //
       const itemQuantity = document.querySelectorAll(".itemQuantity");
       itemQuantity.forEach((item) => {
-        item.addEventListener("change", async (event) => {
+        item.addEventListener("change", (event) => {
           const updateQuantity = event.target.value;
           const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -102,11 +95,12 @@ const displayItems = async () => {
                 
                 // Checking if the user puts a correct value, if not an alert message and the original value is displayed again //
                 if (updateQuantity > 100 || updateQuantity <= 0) {
-                  alert("No way josé");
+                  alert("Please select a positive number between 1-100!");
                   event.target.value = cartItem.quantity;
                   return;
                 }
                 cartItem.quantity = updateQuantity;
+                alert(`Updated quantity to ${updateQuantity}`)
                 break;
               }
             }
@@ -169,10 +163,16 @@ submitFrom.addEventListener("submit", (event) => {
       
 
       // Validation logic here //
+
+      // Switch between inputName //
       switch (inputName) {
         case "firstName":
+
+          // Test the inputValue against regular expression //
           const nameRegex = /^[A-Za-z]+$/;
           if (!nameRegex.test(inputValue)) {
+
+            // Apply invalid styles //
             invalid();
             inputError.textContent = "Please enter a valid first name";
             isValid = false;
@@ -224,13 +224,16 @@ submitFrom.addEventListener("submit", (event) => {
     // if all values enetered return true //
   if(isValid){
     const form = document.querySelector(".cart__order__form");
+
     // Create a formData //
     const formData = new FormData(form);
+
     // Extract the values //
     const contact = Object.fromEntries(formData);
 
     // Get cart items from local storage //
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
     // Get only the id's //
     let products = cart.map(product => product.id)
 
@@ -259,8 +262,6 @@ submitFrom.addEventListener("submit", (event) => {
   }
   
 });
-
-
 
 // Calling the function //
 displayItems();

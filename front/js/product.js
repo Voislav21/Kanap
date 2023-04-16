@@ -1,6 +1,5 @@
 //Retrive only one items data from URL using its id//
 const id = new URLSearchParams(window.location.search).get("id");
-console.log(id);
 
 //Create function to populate the product page specific to its id//
 const getArticle  = () => {
@@ -9,7 +8,6 @@ const getArticle  = () => {
         return res.json();
     })
     .then(item => {
-        console.log(item);
         const addImg = document.querySelector(".item__img");
         addImg.innerHTML += `<img src="${item.imageUrl}" alt="${item.altTxt}">`;
         const addTitle = document.querySelector("#title");
@@ -23,7 +21,6 @@ const getArticle  = () => {
         for (i in item.colors) {
             colorOption.innerHTML += `<option value="${item.colors[i]}">${item.colors[i]}</option>`
         }
-        console.log(colorOption)
     })
 }
 
