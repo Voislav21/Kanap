@@ -44,7 +44,7 @@ const displayItems = async () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
     // Accessing the section of the HTML we want to populate //
-    const cartItems = document.querySelector("#cart__items");
+    const cartItemsElement = document.querySelector("#cart__items");
     
     // Iriterate through each item and storing its information into new varibles //
     for (let i = 0; i < cart.length; i++) {
@@ -57,7 +57,7 @@ const displayItems = async () => {
       const product = await response.json();
         
       // Imbedding all content into the cart page //
-      cartItems.innerHTML += `<article class="cart__item" data-id="${productId}" data-color="${productColor}">
+      cartItemsElement.innerHTML += `<article class="cart__item" data-id="${productId}" data-color="${productColor}">
         <div class="cart__item__img">
           <img src="${product.imageUrl}" alt="${product.altTxt}">
         </div>
@@ -85,11 +85,10 @@ const displayItems = async () => {
       itemQuantity.forEach((item) => {
         item.addEventListener("change", (event) => {
           const updateQuantity = event.target.value;
-          const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 
           // Loop through cart items and update quantity of matching item //
           for (let i=0; i<cart.length;i++) {
-            const cartItem = cartItems[i];
+            const cartItem = cart[i];
             if (cartItem.id === event.target.closest(".cart__item").dataset.id && 
                 cartItem.color === event.target.closest(".cart__item").dataset.color) {
                 
@@ -100,13 +99,15 @@ const displayItems = async () => {
                   return;
                 }
                 cartItem.quantity = updateQuantity;
-                alert(`Updated quantity to ${updateQuantity}`)
+                const productName = event.target.closest(".cart__item");
+                const showProductName = productName.querySelector(".cart__item__content__description h2").textContent;
+                alert(`Updated quantity of ${showProductName} to ${updateQuantity}`)
                 break;
               }
             }
         
           // Save updated cart to local storage //
-          localStorage.setItem("cart", JSON.stringify(cartItems));
+          localStorage.setItem("cart", JSON.stringify(cart));
 
           // Call our function to display new updated totals to the DOM //
           updateTotals();
@@ -117,22 +118,22 @@ const displayItems = async () => {
       const deleteBtn = document.querySelectorAll(".cart__item__content__settings__delete");
       deleteBtn.forEach((btn) => {
         btn.addEventListener("click", (event) => {
-          const cartItem = event.target.closest(".cart__item");
-          const itemId = cartItem.dataset.id;
-          const itemColor = cartItem.dataset.color
+          const targetCartItem = event.target.closest(".cart__item");
+          const itemId = targetCartItem.dataset.id;
+          const itemColor = targetCartItem.dataset.color
 
           // Access the cart from local Storage //
-          const cart = JSON.parse(localStorage.getItem("cart")) || [];
+          const filterCart = JSON.parse(localStorage.getItem("cart")) || [];
 
           // Filter through the cart to target and only keep stored what doesnt match with our click //
-          const UpdatedCart = cart.filter(item => !(item.id === itemId && item.color === itemColor));
+          const UpdatedCart = filterCart.filter(item => !(item.id === itemId && item.color === itemColor));
 
           // Update the cart on local storage //
           localStorage.setItem("cart", JSON.stringify(UpdatedCart));
 
           // Remove the product from the DOM //
-          const itemName = document.querySelector(".cart__item__content__description h2").textContent;
-          cartItem.remove();
+          const itemName = targetCartItem.querySelector(".cart__item__content__description h2").textContent;
+          targetCartItem.remove();
           alert(`You have removed ${itemName} from your cart!`);
 
           // Call our updateTotals function //
@@ -233,10 +234,10 @@ submitFrom.addEventListener("submit", (event) => {
     const contact = Object.fromEntries(formData);
 
     // Get cart items from local storage //
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const mapCart = JSON.parse(localStorage.getItem("cart")) || [];
 
     // Get only the id's //
-    let products = cart.map(product => product.id)
+    const products = mapCart.map(product => product.id)
 
     // Store all data in new varible //
     const sendFormData = {
