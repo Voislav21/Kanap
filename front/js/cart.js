@@ -131,8 +131,9 @@ const displayItems = async () => {
           localStorage.setItem("cart", JSON.stringify(UpdatedCart));
 
           // Remove the product from the DOM //
+          const itemName = document.querySelector(".cart__item__content__description h2").textContent;
           cartItem.remove();
-          alert(`You have removed ${product.name} from your cart!`);
+          alert(`You have removed ${itemName} from your cart!`);
 
           // Call our updateTotals function //
           updateTotals();
