@@ -86,9 +86,12 @@ const displayItems = async () => {
         item.addEventListener("change", (event) => {
           const updateQuantity = event.target.value;
 
+          // Access local Storage //
+          const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+
           // Loop through cart items and update quantity of matching item //
           for (let i=0; i<cart.length;i++) {
-            const cartItem = cart[i];
+            const cartItem = cartItems[i];
             if (cartItem.id === event.target.closest(".cart__item").dataset.id && 
                 cartItem.color === event.target.closest(".cart__item").dataset.color) {
                 
@@ -98,6 +101,8 @@ const displayItems = async () => {
                   event.target.value = cartItem.quantity;
                   return;
                 }
+
+                // Updating the quantity and showing a message //
                 cartItem.quantity = updateQuantity;
                 const productName = event.target.closest(".cart__item");
                 const showProductName = productName.querySelector(".cart__item__content__description h2").textContent;
@@ -107,7 +112,7 @@ const displayItems = async () => {
             }
         
           // Save updated cart to local storage //
-          localStorage.setItem("cart", JSON.stringify(cart));
+          localStorage.setItem("cart", JSON.stringify(cartItems));
 
           // Call our function to display new updated totals to the DOM //
           updateTotals();
