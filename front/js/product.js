@@ -7,6 +7,7 @@ const getArticle  = () => {
     .then(res => {
         return res.json();
     })
+    // Immbed the product //
     .then(item => {
         const addImg = document.querySelector(".item__img");
         addImg.innerHTML += `<img src="${item.imageUrl}" alt="${item.altTxt}">`;
@@ -17,11 +18,17 @@ const getArticle  = () => {
         const addDescription = document.querySelector("#description");
         addDescription.textContent = item.description;
 
+        // Retriving the colors //
         const colorOption = document.querySelector("#colors");
         for (i in item.colors) {
             colorOption.innerHTML += `<option value="${item.colors[i]}">${item.colors[i]}</option>`
         }
     })
+    // Catch errors //
+    .catch(error => {
+        console.error(error);
+        alert("There was an unexpected error. Please try again later");
+    });
 }
 
 
