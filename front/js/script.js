@@ -16,6 +16,11 @@ async function getArticles () {
             </a>`
         }
     })
+    // Catch errors //
+    .catch(error => {
+        console.error(error);
+        alert("There was an unexpected error. Please try again later");
+    });
 }
 //Call the function//
 getArticles();
