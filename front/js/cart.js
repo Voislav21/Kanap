@@ -179,6 +179,9 @@ submitFrom.addEventListener("submit", (event) => {
       const invalid = () => {
         input.style.border = "solid red 2px";
       } 
+      const valid = () => {
+        input.style.border = "none";
+      }
       
 
       // Validation logic here //
@@ -195,6 +198,9 @@ submitFrom.addEventListener("submit", (event) => {
             invalid();
             inputError.textContent = "Please enter a valid first name";
             isValid = false;
+          } else {
+            inputError.textContent = "";
+            valid();
           }
           break;
 
@@ -205,16 +211,22 @@ submitFrom.addEventListener("submit", (event) => {
             invalid();
             inputError.textContent = "Please enter a valid last name";
             isValid = false;
+          } else {
+            inputError.textContent = "";
+            valid();
           }
           break;
 
         // Validation for address //
         case "address":
-          const addressRegex = /^[#.0-9a-zA-ZÀ-ÿ\s'-]+$/;
+          const addressRegex = /^[#.0-9a-zA-ZÀ-ÿ\s'-/]+$/;
           if(!addressRegex.test(inputValue)){
             invalid();
             inputError.textContent = "Please enter a valid address";
             isValid = false;
+          } else {
+            inputError.textContent = "";
+            valid();
           }
           break;
 
@@ -225,6 +237,9 @@ submitFrom.addEventListener("submit", (event) => {
             invalid();
             inputError.textContent = "Please enter a valid address";
             isValid = false;
+          } else {
+            inputError.textContent = "";
+            valid();
           }
           break;
 
@@ -235,6 +250,9 @@ submitFrom.addEventListener("submit", (event) => {
             invalid();
             inputError.textContent = "Please enter a valid address";
             isValid = false;
+          } else {
+            inputError.textContent = "";
+            valid();
           }
           break;
       }
