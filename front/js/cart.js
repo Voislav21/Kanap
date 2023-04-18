@@ -23,17 +23,24 @@ const updateTotals = async () => {
     const productId = cart[i].id;
     const productQuantity = cart[i].quantity;
 
-    // Fetch product details from API based on unique product ID //
-    const response = await fetch(`http://localhost:3000/api/products/${productId}`);
-    const product = await response.json();
+    try {
+      // Fetch product details from API based on unique product ID //
+      const response = await fetch(`http://localhost:3000/api/products/${productId}`);
+      const product = await response.json();
 
-    // Math to calculate totalPrice and totalQuantity //
-    totalPrice += product.price * productQuantity;
-    totalQuantity += parseInt(productQuantity);
+      // Math to calculate totalPrice and totalQuantity //
+      totalPrice += product.price * productQuantity;
+      totalQuantity += parseInt(productQuantity);
 
-    // Display totalPrice and totalQuantity to the DOM //
-    totalPriceElement.textContent = totalPrice;
-    totalQuantityElement.textContent = totalQuantity;
+      // Display totalPrice and totalQuantity to the DOM //
+      totalPriceElement.textContent = totalPrice;
+      totalQuantityElement.textContent = totalQuantity;
+
+      // Catch if any errors //
+    } catch (error) {
+      console.error(error);
+      alert("An error occurred while fetching product details. Please try again later.");
+    }
   }
 };
 
@@ -51,35 +58,40 @@ const displayItems = async () => {
       const productId = cart[i].id;
       const productColor = cart[i].color;
       const productQuantity = cart[i].quantity;
-    
-      // Fetch the product details from the API based on unique product ID //
-      const response = await fetch(`http://localhost:3000/api/products/${productId}`);
-      const product = await response.json();
-        
-      // Imbedding all content into the cart page //
-      cartItemsElement.innerHTML += `<article class="cart__item" data-id="${productId}" data-color="${productColor}">
-        <div class="cart__item__img">
-          <img src="${product.imageUrl}" alt="${product.altTxt}">
-        </div>
-        <div class="cart__item__content">
-          <div class="cart__item__content__description">
-            <h2>${product.name}</h2>
-            <p>${product.description}</p>
-            <p>${productColor}</p>
-            <p>${product.price}</p>
-          </div>
-          <div class="cart__item__content__settings">
-            <div class="cart__item__content__settings__quantity">
-              <p>Quantity : </p>
-              <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${productQuantity}">
-            </div>
-            <div class="cart__item__content__settings__delete">
-              <p class="deleteItem">Delete</p>
-            </div>
-          </div>
-        </div>
-      </article>`;
 
+      try {
+        // Fetch the product details from the API based on unique product ID //
+        const response = await fetch(`http://localhost:3000/api/products/${productId}`);
+        const product = await response.json();
+
+        // Imbedding all content into the cart page //
+        cartItemsElement.innerHTML += `<article class="cart__item" data-id="${productId}" data-color="${productColor}">
+          <div class="cart__item__img">
+            <img src="${product.imageUrl}" alt="${product.altTxt}">
+          </div>
+          <div class="cart__item__content">
+            <div class="cart__item__content__description">
+              <h2>${product.name}</h2>
+              <p>${product.description}</p>
+              <p>${productColor}</p>
+              <p>${product.price}</p>
+            </div>
+            <div class="cart__item__content__settings">
+              <div class="cart__item__content__settings__quantity">
+                <p>Quantity : </p>
+                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${productQuantity}">
+              </div>
+              <div class="cart__item__content__settings__delete">
+                <p class="deleteItem">Delete</p>
+              </div>
+            </div>
+          </div>
+        </article>`;
+      } catch (error) {
+        console.error(error);
+        alert("An error occurred while fetching product details. Please try again later.");
+      }
+    
       // Add event listener for each products itemQuantity to be modified //
       const itemQuantity = document.querySelectorAll(".itemQuantity");
       itemQuantity.forEach((item) => {
@@ -96,7 +108,7 @@ const displayItems = async () => {
                 cartItem.color === event.target.closest(".cart__item").dataset.color) {
                 
                 // Checking if the user puts a correct value, if not an alert message and the original value is displayed again //
-                if (updateQuantity > 100 || updateQuantity <= 0) {
+                if (updateQuantity > 100 || updateQuantity <= 0 || !Number.isInteger(Number(updateQuantity))) {
                   alert("Please select a positive number between 1-100!");
                   event.target.value = cartItem.quantity;
                   return;
