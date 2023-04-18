@@ -41,6 +41,7 @@ addToCart.addEventListener('click', () => {
     //if the color or the quantity is not selected display an error message and prevent the code from executing//
     if(colorSelect === '' || quantitySelect === '' || !Number.isInteger(Number(quantitySelect)) || parseInt(quantitySelect) <= 0 || parseInt(quantitySelect) > 100) {
         alert ("Please select a color and a positive number between 1-100!");
+        document.querySelector("#quantity").value = 0;
         return;
     }
 
@@ -59,10 +60,17 @@ addToCart.addEventListener('click', () => {
 
     if (existingProduct) {
 
+        // Save the original quantity value
+        const originalQuantity = existingProduct.quantity;
+
         //if existing product is found, update its quantity//
         existingProduct.quantity = parseInt(existingProduct.quantity) + parseInt(addProduct.quantity);
         if(existingProduct.quantity > 100) {
             alert(`You can not order more than 100 of the same product. You currently have: ${existingProduct.quantity}`);
+            
+            // Reset the input value to the original quantity value
+            const quantityInput = document.querySelector("#quantity");
+            quantityInput.value = originalQuantity;
             return;
         }
         alert(`Added ${quantitySelect} of ${productName} ${colorSelect} to your cart!`);
