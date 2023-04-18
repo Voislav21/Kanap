@@ -39,7 +39,7 @@ addToCart.addEventListener('click', () => {
     const productName = document.querySelector("#title").textContent;
 
     //if the color or the quantity is not selected display an error message and prevent the code from executing//
-    if(colorSelect === '' || quantitySelect === '' || parseInt(quantitySelect) <= 0 || parseInt(quantitySelect) > 100) {
+    if(colorSelect === '' || quantitySelect === '' || !Number.isInteger(Number(quantitySelect)) || parseInt(quantitySelect) <= 0 || parseInt(quantitySelect) > 100) {
         alert ("Please select a color and a positive number between 1-100!");
         return;
     }
