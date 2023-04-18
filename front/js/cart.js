@@ -280,24 +280,30 @@ submitFrom.addEventListener("submit", (event) => {
       products,
     }
 
-    // Make a POST request
-    fetch('http://localhost:3000/api/products/order', {
-      method: 'POST',
-      body: JSON.stringify(sendFormData),
-      headers: { 
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(res =>{
-      return res.json();
-    })
-    .then(data =>{
-      // Store the response in a new varible to be sent to a unique confirmation page //
-      const orderId = data.orderId;
-      window.location.href = `confirmation.html?id=${orderId}`;
-    })
+    try {
+      // Make a POST request
+      fetch('http://localhost:3000/api/products/order', {
+        method: 'POST',
+        body: JSON.stringify(sendFormData),
+        headers: { 
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res =>{
+        return res.json();
+      })
+      .then(data =>{
+        // Store the response in a new varible to be sent to a unique confirmation page //
+        const orderId = data.orderId;
+        window.location.href = `confirmation.html?id=${orderId}`;
+      })
+
+      // Catch any errors //
+    } catch (error) {
+      console.error(error);
+      alert("There was an unexpected error. Please try again later");
+    }
   }
-  
 });
 
 // Calling the function //
