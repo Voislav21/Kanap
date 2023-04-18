@@ -188,7 +188,7 @@ submitFrom.addEventListener("submit", (event) => {
         case "firstName":
 
           // Test the inputValue against regular expression //
-          const nameRegex = /^[A-Za-z]+$/;
+          const nameRegex = /^[A-Za-zÀ-ÿ-]+$/;
           if (!nameRegex.test(inputValue)) {
 
             // Apply invalid styles //
@@ -200,7 +200,7 @@ submitFrom.addEventListener("submit", (event) => {
 
         // Validation for last name //
         case "lastName":
-          const lastNameRegex = /^[A-Za-z]+$/;
+          const lastNameRegex = /^[A-Za-zÀ-ÿ-]+$/;
           if (!lastNameRegex.test(inputValue)) {
             invalid();
             inputError.textContent = "Please enter a valid last name";
@@ -210,7 +210,7 @@ submitFrom.addEventListener("submit", (event) => {
 
         // Validation for address //
         case "address":
-          const addressRegex = /^[#.0-9a-zA-Z\s,-]+$/;
+          const addressRegex = /^[#.0-9a-zA-ZÀ-ÿ\s'-]+$/;
           if(!addressRegex.test(inputValue)){
             invalid();
             inputError.textContent = "Please enter a valid address";
@@ -220,7 +220,7 @@ submitFrom.addEventListener("submit", (event) => {
 
         // Validation for city //
         case "city":
-          const cityRegex = /^[a-zA-Z\s]+$/;
+          const cityRegex = /^[a-zA-ZÀ-ÿ\s'.]+$/;
           if(!cityRegex.test(inputValue)){
             invalid();
             inputError.textContent = "Please enter a valid address";
